@@ -1,4 +1,4 @@
-# Spiri uC software
+# Spiri CM software
 
 This repository holds source for computation module software used in Spiri car (models CP104 and newer), as well vehicles retrofitted with Spiri ride-sharing cluster technology.
 
