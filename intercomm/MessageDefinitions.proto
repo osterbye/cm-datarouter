@@ -7,7 +7,7 @@ message ContainerMessage {
   // required TYPE type = 1; // may be redundant because ProtoBuf generates WhichOneOf method
 
   oneof message {
-      StatusUpdate status             = 1;
+      StatusUpdate statusUpdate       = 1;
       CommandRequest commandRequest   = 2;
       CommandResponse commandResponse = 3;
   }
@@ -80,7 +80,7 @@ message StatusUpdate{
     optional bool doorLockedRR          = 47;
     optional bool doorLockedRL          = 48;
 
-    repeated SPIRIERRORS activeError    = 49;
+    optional uint64 activeErrors        = 49;
 }
 
 enum COMMAND_ORIGIN {

@@ -8,13 +8,13 @@ filename = 'sample_pb.bin'
 FRAME_PREAMBLE = b'\x50\x41'
 FRAME_TYPE = b'\x01'
 
-# generate 10 messages with status updates
+# generate 10 messages with statusUpdate data
 frames = []
 for i in range(10):
   container = MessageDefinitions_pb2.ContainerMessage()
-  container.status.timestamp = 600 + i
-  container.status.speedDisplayed = 42 - i
-  container.status.activeError.append(container.status.ERR_HV_CELL_OVER_VOLTAGE)
+  container.statusUpdate.timestamp = 600 + i
+  container.statusUpdate.speedDisplayed = 42 - i
+  container.statusUpdate.voltageLV = 13 + i / 10
 
   message_serialized = container.SerializeToString()
 
@@ -32,6 +32,6 @@ with open(filename, 'wb') as fd:
 
 # Example of going other way:
 #
-# status = MessageDefinitions_pb2.StatusUpdate()
-# status.ParseFromString(b'\xA0\x06\x9A\x05\x4D\x00\x00\x28\x42')
-# print(status.timestamp)
+# statusUpdate = MessageDefinitions_pb2.StatusUpdateUpdate()
+# statusUpdate.ParseFromString(b'\xA0\x06\x9A\x05\x4D\x00\x00\x28\x42')
+# print(statusUpdate.timestamp)
