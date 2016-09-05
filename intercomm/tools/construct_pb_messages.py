@@ -5,8 +5,9 @@ import struct
 
 filename = 'sample_pb.bin'
 
-FRAME_PREAMBLE = b'\x50\x41'
+FRAME_PREAMBLE = b'\xAA\x55'
 FRAME_TYPE = b'\x01'
+FRAME_RESERVED = b'\x00\x00\x00'
 
 # generate 10 messages with statusUpdate data
 frames = []
@@ -18,12 +19,14 @@ for i in range(10):
 
   message_serialized = container.SerializeToString()
 
-  print(''.join('\\x%02X' % n for n in message_serialized))
-  frame_crc_serialized = b'\xFF\xFF' # TODO
-  frame_length = 2 + len(message_serialized) + len(frame_crc_serialized) + len(FRAME_PREAMBLE) + len(FRAME_TYPE)
-  frame_length_serialized = struct.pack('<H', frame_length)
-  frame_serialized = b''.join([FRAME_PREAMBLE, FRAME_TYPE, frame_length_serialized, message_serialized, frame_crc_serialized])
+  frame_crc_serialized = b'\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF'
+  frame_length = len(FRAME_PREAMBLE) + len(FRAME_TYPE) + len(FRAME_RESERVED) + 2 + len(message_serialized) + len(frame_crc_serialized)
+  frame_length_serialized = struct.pack('>H', frame_length)
+  frame_serialized = b''.join([FRAME_PREAMBLE, FRAME_TYPE, FRAME_RESERVED, frame_length_serialized, message_serialized])
+  frame_serialized = frame_serialized + frame_crc_serialized
   frames.append(frame_serialized)
+  print(''.join('\\x%02X' % n for n in message_serialized))
+  print(''.join('\\x%02X' % n for n in frame_serialized))
 
 # write generated messages as binary file
 with open(filename, 'wb') as fd:
