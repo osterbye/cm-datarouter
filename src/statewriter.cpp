@@ -5,12 +5,10 @@
 
 using namespace google::protobuf;
 
-const QString filename = "../status_updates.sqlite";
-
-StateWriter::StateWriter(QObject *parent) : QObject(parent)
+StateWriter::StateWriter(QObject *parent, QString filename) : QObject(parent)
 {
     db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName("/home/josip/spiri/cm-datarouter/status_updates.sqlite");
+    db.setDatabaseName(filename);
     if (db.open())
         qDebug("SQL connection OK");
     else
