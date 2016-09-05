@@ -1,7 +1,7 @@
-#include <QtSql>
-#include "MessageDefinitions.pb.h"
-#include <google/protobuf/stubs/common.h>
 #include "statewriter.h"
+#include "pbmessenger.h"
+#include "MessageDefinitions.pb.h"
+#include <QtSql>
 
 using namespace google::protobuf;
 
@@ -21,8 +21,7 @@ StateWriter::StateWriter(QObject *parent) : QObject(parent)
     QStringList fieldList = getFieldNames(&statusUpdate);
     QString columnNames  = fieldList.join(',');
     QString placeholders = ":" + fieldList.join(", :");
-    queryTemplate = QStringLiteral("INSERT INTO measurements (%1) VALUES (%2)").arg(columnNames).arg(
-                        placeholders);
+    queryTemplate = QStringLiteral("INSERT INTO measurements (%1) VALUES (%2)").arg(columnNames).arg(placeholders);
     // We should now have template like this: "INSERT INTO measurements (timestamp, speed) VALUES (:timestamp, :speed)"
 }
 
@@ -45,10 +44,9 @@ QString StateWriter::getLastExecutedQuery(const QSqlQuery &query)
 }
 
 //// Construct list of all possible fields in PB message
-QStringList StateWriter::getFieldNames(google::protobuf::Message *message)
+QStringList StateWriter::getFieldNames(const google::protobuf::Message *message)
 {
     const Descriptor *desc = message->GetDescriptor();
-    //message->GetDescriptor();
     int fieldCount = desc->field_count();
 
     QStringList fieldList;
@@ -61,50 +59,6 @@ QStringList StateWriter::getFieldNames(google::protobuf::Message *message)
     return fieldList;
 }
 
-QVariant StateWriter::getMessageField(const google::protobuf::Message * message, const FieldDescriptor * field)
-{
-    const Reflection *refl = message->GetReflection();
-    const FieldDescriptor::Type field_type = field->type();
-    const QVariant nullValue = QVariant(QVariant::String); // type doesn't matter as SQLite is dynamically typed
-
-    QVariant variant;
-    if (refl->HasField(*message, field)) {
-        switch (field_type) {
-        case FieldDescriptor::Type::TYPE_FLOAT:
-            variant = QVariant(refl->GetFloat(*message, field));
-            break;
-        case FieldDescriptor::Type::TYPE_INT32:
-            variant = QVariant(refl->GetInt32(*message, field));
-            break;
-        case FieldDescriptor::Type::TYPE_INT64:
-            variant = QVariant(refl->GetInt64(*message, field));
-            break;
-        case FieldDescriptor::Type::TYPE_SINT32:
-            variant = QVariant(refl->GetInt32(*message, field));
-            break;
-        case FieldDescriptor::Type::TYPE_SINT64:
-            variant = QVariant(refl->GetInt64(*message, field));
-            break;
-        case FieldDescriptor::Type::TYPE_BOOL:
-            variant = QVariant(refl->GetBool(*message, field));
-            break;
-        case FieldDescriptor::Type::TYPE_STRING:
-            variant = QVariant(refl->GetString(*message, field).c_str());
-            break;
-        /* TODO: not sure how ENUMs are fetched from PB message
-        case FieldDescriptor::Type::TYPE_ENUM:
-            stateUpdateQuery.bindValue(fieldName, QString::number(refl->GetEnumValue(status, field)));
-            break;*/
-        default:
-            qCritical("Unsupported field type %s", field->name().c_str());
-            variant = nullValue;
-        }
-    } else {
-        variant = nullValue;
-    }
-    return variant;
-}
-
 //// Receive status update and write to database
 void StateWriter::receiveStatus(StatusUpdate status)
 {
@@ -115,8 +69,9 @@ void StateWriter::receiveStatus(StatusUpdate status)
     int fieldCount = desc->field_count();
     for (int i = 0; i < fieldCount; i++) {
         const FieldDescriptor *field = desc->field(i);
+            QVariant fieldValue = PBMessenger::getMessageField(&status, field);
         QString fieldName = QString::fromStdString(":" + field->name());
-        stateUpdateQuery.bindValue(fieldName, getMessageField(&status, field));
+        stateUpdateQuery.bindValue(fieldName, fieldValue);
     }
     // the query is prepared, attempt to execute and report any errors
     if (!stateUpdateQuery.exec()) {

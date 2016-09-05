@@ -11,6 +11,9 @@ class PBMessenger : public QObject
 public:
     explicit PBMessenger(QObject *parent = 0);
     ~PBMessenger();
+
+    static QVariant getMessageField(const google::protobuf::Message * message, const google::protobuf::FieldDescriptor * field);
+
 private:
 
 signals:
