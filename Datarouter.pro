@@ -17,11 +17,13 @@ TEMPLATE = app
 
 SOURCES += \
     src/main.cpp \
+    src/datarouter.cpp \
     src/pbmessenger.cpp \
     src/mockbus.cpp \
     src/statewriter.cpp
 
 HEADERS += \
+    src/datarouter.h \
     src/pbmessenger.h \
     src/mockbus.h \
     src/statewriter.h

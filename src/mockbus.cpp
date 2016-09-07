@@ -11,6 +11,10 @@ MockBus::MockBus(QObject *parent) : QObject(parent)
     {
         qDebug() << "Could not open specified input file: " << filename;
     }
+    // Run task periodically
+    QObject::connect(&m_readTimer, &QTimer::timeout, this, &MockBus::readNextMessage);
+    m_readTimer.setSingleShot(false);
+    m_readTimer.start(500);
 }
 
 MockBus::~MockBus()
