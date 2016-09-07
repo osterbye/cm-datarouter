@@ -15,15 +15,17 @@ TEMPLATE = app
 
 SOURCES += \
     src_tst/main.cpp \
+    src_tst/pbmessenger_tst.cpp \
+    src_tst/statewriter_tst.cpp \
     src/pbmessenger.cpp \
     src/statewriter.cpp \
 
 
 HEADERS += \
-    src_tst/pbmessenger_tst.hpp \
-    src_tst/statewriter_tst.hpp \
     src/pbmessenger.h \
     src/statewriter.h \
+    src_tst/pbmessenger_tst.h \
+    src_tst/statewriter_tst.h
 
 DISTFILES += \
     protobuf.pri \
