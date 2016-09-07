@@ -13,9 +13,9 @@ public:
     ~StateWriter();
 
 private:
-    QSqlQuery stateUpdateQuery;
-    QSqlDatabase db;
-    QString queryTemplate;
+    QSqlDatabase m_db;
+    QSqlQuery m_stateUpdateQuery;
+    QString m_queryTemplate;
 
     QString getLastExecutedQuery(const QSqlQuery &query);
     QStringList getFieldNames(const google::protobuf::Message *message);

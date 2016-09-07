@@ -19,7 +19,7 @@ private slots:
     void receiveUpdate();
 
 private:
-    StateWriter * statewriter;
+    StateWriter * m_statewriter;
 };
 
 #endif // STATEWRITER_TST_H

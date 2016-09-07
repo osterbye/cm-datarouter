@@ -4,15 +4,15 @@
 
 void StateWriter_Tst::openDatabase()
 {
-    statewriter = new StateWriter();
-    QVERIFY(statewriter->db.isOpen());
-    QVERIFY(statewriter->db.isValid());
-    delete statewriter;
+    m_statewriter = new StateWriter();
+    QVERIFY(m_statewriter->m_db.isOpen());
+    QVERIFY(m_statewriter->m_db.isValid());
+    delete m_statewriter;
 }
 
 void StateWriter_Tst::receiveUpdate()
 {
-    statewriter = new StateWriter(0, ":memory:");
+    m_statewriter = new StateWriter(0, ":memory:");
 
     // prepare test data
     StatusUpdate status;
@@ -29,20 +29,20 @@ void StateWriter_Tst::receiveUpdate()
     query.prepare(schema.readAll());
     if (!query.exec()) {
         qCritical("Could not create table");
-        qDebug() << "\t" << statewriter->getLastExecutedQuery(query);
+        qDebug() << "\t" << m_statewriter->getLastExecutedQuery(query);
         qDebug() << query.lastError();
     }
-    statewriter->receiveStatus(status);
+    m_statewriter->receiveStatus(status);
     query.finish();
     query.prepare("SELECT (timestamp) FROM measurements");
     if (!query.exec()) {
         qCritical("Could not execute query");
-        qDebug() << "\t" << statewriter->getLastExecutedQuery(query);
+        qDebug() << "\t" << m_statewriter->getLastExecutedQuery(query);
         qDebug() << query.lastError();
     }
     // verify test data
     QVERIFY(query.next());
     QVERIFY(query.value(0) == 42);
     QVERIFY(!query.next());
-    delete statewriter;
+    delete m_statewriter;
 }

@@ -27,10 +27,10 @@ private slots:
 
 
 private:
-    PBMessenger * messenger;
-    QSignalSpy * spyStatus;
-    QSignalSpy * spyRequest;
-    QSignalSpy * spyResponse;
+    PBMessenger * m_messenger;
+    QSignalSpy * m_spyStatus;
+    QSignalSpy * m_spyRequest;
+    QSignalSpy * m_spyResponse;
 };
 
 #endif // PBMESSENGER_TST_H

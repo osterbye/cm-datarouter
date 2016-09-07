@@ -18,8 +18,8 @@ signals:
 public slots:
 
 private:
-    QByteArray busArray;
-    QFile busDevice;
+    QByteArray m_busArray;
+    QFile m_busDevice;
 };
 
 #endif // MOCKBUS_H

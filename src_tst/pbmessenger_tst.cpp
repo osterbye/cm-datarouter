@@ -9,27 +9,27 @@ void PBMessenger_Tst::initTestCase()
 
 void PBMessenger_Tst::init()
 { // called before each test
-    messenger = new PBMessenger();
-    spyStatus = new QSignalSpy(messenger, SIGNAL(newStatusReceived(StatusUpdate)));
-    spyRequest = new QSignalSpy(messenger, SIGNAL(newCommandRequestReceived(CommandRequest)));
-    spyResponse = new QSignalSpy(messenger, SIGNAL(newCommandResponseReceived(CommandResponse)));
+    m_messenger = new PBMessenger();
+    m_spyStatus = new QSignalSpy(m_messenger, SIGNAL(newStatusReceived(StatusUpdate)));
+    m_spyRequest = new QSignalSpy(m_messenger, SIGNAL(newCommandRequestReceived(CommandRequest)));
+    m_spyResponse = new QSignalSpy(m_messenger, SIGNAL(newCommandResponseReceived(CommandResponse)));
 }
 
 void PBMessenger_Tst::cleanup()
 { // called after each test
-    delete messenger;
-    delete spyStatus;
-    delete spyRequest;
-    delete spyResponse;
+    delete m_messenger;
+    delete m_spyStatus;
+    delete m_spyRequest;
+    delete m_spyResponse;
 }
 
 void PBMessenger_Tst::emptyMessage()
 {
     QByteArray array; // empty
-    messenger->receiveMessage(array);
-    QCOMPARE(spyStatus->count(),   0);
-    QCOMPARE(spyRequest->count(),  0);
-    QCOMPARE(spyResponse->count(), 0);
+    m_messenger->receiveMessage(array);
+    QCOMPARE(m_spyStatus->count(),   0);
+    QCOMPARE(m_spyRequest->count(),  0);
+    QCOMPARE(m_spyResponse->count(), 0);
 }
 
 void PBMessenger_Tst::statusMessage()
@@ -37,10 +37,10 @@ void PBMessenger_Tst::statusMessage()
     ContainerMessage cm;
     cm.mutable_statusupdate();
     QByteArray array(cm.SerializeAsString().c_str());
-    messenger->receiveMessage(array);
-    QCOMPARE(spyStatus->count(),   1);
-    QCOMPARE(spyRequest->count(),  0);
-    QCOMPARE(spyResponse->count(), 0);
+    m_messenger->receiveMessage(array);
+    QCOMPARE(m_spyStatus->count(),   1);
+    QCOMPARE(m_spyRequest->count(),  0);
+    QCOMPARE(m_spyResponse->count(), 0);
 }
 
 void PBMessenger_Tst::requestMessage()
@@ -48,10 +48,10 @@ void PBMessenger_Tst::requestMessage()
     ContainerMessage cm;
     cm.mutable_commandrequest();
     QByteArray array(cm.SerializeAsString().c_str());
-    messenger->receiveMessage(array);
-    QCOMPARE(spyStatus->count(),   0);
-    QCOMPARE(spyRequest->count(),  1);
-    QCOMPARE(spyResponse->count(), 0);
+    m_messenger->receiveMessage(array);
+    QCOMPARE(m_spyStatus->count(),   0);
+    QCOMPARE(m_spyRequest->count(),  1);
+    QCOMPARE(m_spyResponse->count(), 0);
 }
 
 void PBMessenger_Tst::responseMessage()
@@ -59,8 +59,8 @@ void PBMessenger_Tst::responseMessage()
     ContainerMessage cm;
     cm.mutable_commandresponse();
     QByteArray array(cm.SerializeAsString().c_str());
-    messenger->receiveMessage(array);
-    QCOMPARE(spyStatus->count(),   0);
-    QCOMPARE(spyRequest->count(),  0);
-    QCOMPARE(spyResponse->count(), 1);
+    m_messenger->receiveMessage(array);
+    QCOMPARE(m_spyStatus->count(),   0);
+    QCOMPARE(m_spyRequest->count(),  0);
+    QCOMPARE(m_spyResponse->count(), 1);
 }
