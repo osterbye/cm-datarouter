@@ -11,7 +11,6 @@ PBMessenger::PBMessenger(QObject *parent) : QObject(parent)
 
 PBMessenger::~PBMessenger()
 {
-    google::protobuf::ShutdownProtobufLibrary();
 }
 
 void PBMessenger::receiveMessage(QByteArray msg)

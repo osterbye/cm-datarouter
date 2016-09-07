@@ -38,7 +38,6 @@ bool MockBus::readNextMessage()
 
     int frameLength =  (busArray[6] << 8) + busArray[7];
     int messageLength = frameLength - 2 - 1 - 3 - 2 - 8; // removing preamble, type, reserved, length, crc
-    qDebug() << frameLength << messageLength;
     busArray = busDevice.read(messageLength);
     if (busArray.length() != messageLength)
         return false; // no more messages in file

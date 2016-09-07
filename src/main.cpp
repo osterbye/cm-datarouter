@@ -17,9 +17,13 @@ public:
         QObject::connect(&messenger, &PBMessenger::newStatusReceived, &stateWriter, &StateWriter::receiveStatus);
         //QObject::connect(messenger, &PBMessenger::newStatusUpdate, &calc.receiveStatus);
     }
+    ~Task()
+    {
+        google::protobuf::ShutdownProtobufLibrary();
+    }
 
 private:
-    MockBus busDevice;
+    MockBus busDevice; // TODO: once SpiBus is implemented, move MockBus to unit test project
     //SpiBus busDevice;
     PBMessenger messenger;
     StateWriter stateWriter;

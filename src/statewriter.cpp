@@ -7,14 +7,16 @@ using namespace google::protobuf;
 
 StateWriter::StateWriter(QObject *parent, QString filename) : QObject(parent)
 {
+    // connect to SQLite db specified in filename argument
     db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName(filename);
     if (db.open())
         qDebug("SQL connection OK");
     else
         qCritical("SQL file connection error");
-    stateUpdateQuery = QSqlQuery(db);
 
+    // prepare SQL query for inserting status updates into table
+    stateUpdateQuery = QSqlQuery(db);
     StatusUpdate statusUpdate;
     QStringList fieldList = getFieldNames(&statusUpdate);
     QString columnNames  = fieldList.join(',');
