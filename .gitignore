@@ -1,2 +1,59 @@
+# C++ objects and libs
+
+*.slo
+*.lo
+*.o
+*.a
+*.la
+*.lai
+*.so
+*.dll
+*.dylib
+
+# Qt-es
+
+/.qmake.cache
+/.qmake.stash
+*.pro.user
+*.pro.user.*
+*.qbs.user
+*.qbs.user.*
+*.moc
+moc_*.cpp
+qrc_*.cpp
+ui_*.h
+Makefile*
+*build-*
+
+# QtCreator
+
+*.autosave
+
+# SublimeText
+
+*.sublime-*
+
+# QtCtreator Qml
+*.qmlproject.user
+*.qmlproject.user.*
+
+# QtCtreator CMake
+CMakeLists.txt.user*
+
+# Build directories
 debug/*
 release/*
+tests/*
+
+# ProtoBuf auto-generated
+*.pb.cc
+*.pb.h
+
+# Intercomm generated files
+intercomm/tools/*.bin
+intercomm/tools/*.schema
+intercomm/tools/*.pyc
+intercomm/tools/__pycache__/*
+
+
+
