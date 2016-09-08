@@ -7,8 +7,7 @@ MockBus::MockBus(QObject *parent) : QObject(parent)
 {
     QString filename = "../intercomm/tools/sample_pb.bin";
     m_busDevice.setFileName(filename);
-    if (! m_busDevice.open(QIODevice::ReadOnly))
-    {
+    if (! m_busDevice.open(QIODevice::ReadOnly)) {
         LOG_CRITICAL("Could not open specified input file: " << filename);
     }
     // Run task periodically

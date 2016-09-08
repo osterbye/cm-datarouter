@@ -33,11 +33,12 @@ void PBMessenger::receiveMessage(QByteArray msg)
 
 
 //// Geet field value from any PB message and return as QVariant
-QVariant PBMessenger::getMessageField(const Message * message, const FieldDescriptor * field)
+QVariant PBMessenger::getMessageField(const Message *message, const FieldDescriptor *field)
 {
     const Reflection *refl = message->GetReflection();
     const FieldDescriptor::Type field_type = field->type();
-    const QVariant nullValue = QVariant(QVariant::String); // type doesn't matter as SQLite is dynamically typed
+    const QVariant nullValue = QVariant(QVariant::String);
+    // QVariant type irrelevant (SQLite is dynamically typed)
 
     QVariant variant;
     if (refl->HasField(*message, field)) {

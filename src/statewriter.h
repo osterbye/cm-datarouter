@@ -9,7 +9,7 @@ class StateWriter : public QObject
 {
     Q_OBJECT
 public:
-    explicit StateWriter(QObject *parent = 0, QString filename="../status_updates.sqlite");
+    explicit StateWriter(QObject *parent = 0, QString filename = "../status_updates.sqlite");
     ~StateWriter();
 
 private:

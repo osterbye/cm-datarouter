@@ -70,7 +70,7 @@ void StateWriter::receiveStatus(StatusUpdate status)
     int fieldCount = desc->field_count();
     for (int i = 0; i < fieldCount; i++) {
         const FieldDescriptor *field = desc->field(i);
-            QVariant fieldValue = PBMessenger::getMessageField(&status, field);
+        QVariant fieldValue = PBMessenger::getMessageField(&status, field);
         QString fieldName = QString::fromStdString(":" + field->name());
         m_stateUpdateQuery.bindValue(fieldName, fieldValue);
     }
