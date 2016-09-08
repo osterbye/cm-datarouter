@@ -1,6 +1,6 @@
 #include "pbmessenger.h"
+#include "logging.h"
 #include <QVariant>
-#include <QDebug>
 
 using namespace google::protobuf;
 
@@ -18,18 +18,17 @@ void PBMessenger::receiveMessage(QByteArray msg)
     ContainerMessage container;
     container.ParseFromArray(msg, msg.size());
     if (container.has_statusupdate()) {
-        qInfo("Received Status Update message");
+        LOG_INFO("Received Status Update message");
         emit newStatusReceived(container.statusupdate());
     } else if (container.has_commandrequest()) {
-        qInfo("Received Command Request message");
+        LOG_INFO("Received Command Request message");
         emit newCommandRequestReceived(container.commandrequest());
     } else if (container.has_commandresponse()) {
-        qInfo("Received Command Response message");
+        LOG_INFO("Received Command Response message");
         emit newCommandResponseReceived(container.commandresponse());
     } else {
-        qWarning("Unsupported message format!");
+        LOG_WARN("Unsupported message format!");
     }
-    //qDebug() << " timestamp " << container.has_statusupdate() << container.has_commandrequest();
 }
 
 
@@ -69,7 +68,7 @@ QVariant PBMessenger::getMessageField(const Message * message, const FieldDescri
             stateUpdateQuery.bindValue(fieldName, QString::number(refl->GetEnumValue(status, field)));
             break;*/
         default:
-            qCritical("Unsupported field type %s", field->name().c_str());
+            LOG_CRITICAL("Unsupported field type " << field->name().c_str());
             variant = nullValue;
         }
     } else {

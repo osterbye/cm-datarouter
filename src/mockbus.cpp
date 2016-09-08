@@ -1,7 +1,7 @@
 #include "mockbus.h"
+#include "logging.h"
 #include <QIODevice>
 #include <QFile>
-#include <QDebug>
 
 MockBus::MockBus(QObject *parent) : QObject(parent)
 {
@@ -9,7 +9,7 @@ MockBus::MockBus(QObject *parent) : QObject(parent)
     m_busDevice.setFileName(filename);
     if (! m_busDevice.open(QIODevice::ReadOnly))
     {
-        qDebug() << "Could not open specified input file: " << filename;
+        LOG_CRITICAL("Could not open specified input file: " << filename);
     }
     // Run task periodically
     QObject::connect(&m_readTimer, &QTimer::timeout, this, &MockBus::readNextMessage);
@@ -26,7 +26,7 @@ void MockBus::readNextMessage()
 {
     m_busArray = m_busDevice.read(2 + 1 + 3 + 2); // includes preamble, frame type and frame length
     if (m_busArray.length() != 2 + 1 + 3 + 2) {
-        qDebug() << "End of file, no more messages";
+        LOG_INFO("End of file, no more messages");
         return;
     }
 

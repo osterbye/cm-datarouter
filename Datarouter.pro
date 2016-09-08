@@ -26,7 +26,8 @@ HEADERS += \
     src/datarouter.h \
     src/pbmessenger.h \
     src/mockbus.h \
-    src/statewriter.h
+    src/statewriter.h \
+    src/logging.h
 
 DISTFILES += \
     protobuf.pri \

@@ -1,4 +1,5 @@
 #include "statewriter.h"
+#include "logging.h"
 #include "pbmessenger.h"
 #include "MessageDefinitions.pb.h"
 #include <QtSql>
@@ -11,9 +12,9 @@ StateWriter::StateWriter(QObject *parent, QString filename) : QObject(parent)
     m_db = QSqlDatabase::addDatabase("QSQLITE");
     m_db.setDatabaseName(filename);
     if (m_db.open())
-        qDebug("SQL connection OK");
+        LOG_INFO("SQL connection OK");
     else
-        qCritical("SQL file connection error");
+        LOG_CRITICAL("SQL file connection error");
 
     // prepare SQL query for inserting status updates into table
     m_stateUpdateQuery = QSqlQuery(m_db);
@@ -75,11 +76,12 @@ void StateWriter::receiveStatus(StatusUpdate status)
     }
     // the query is prepared, attempt to execute and report any errors
     if (!m_stateUpdateQuery.exec()) {
-        qCritical("Could not execute query");
-        qDebug() << "\t" << getLastExecutedQuery(m_stateUpdateQuery);
-        qDebug() << m_stateUpdateQuery.lastError();
-        qDebug("Most likely the SQL table column names are different from ProtoBuf message field names");
-    } else
-        qDebug() << "Status update stored in SQL db";
+        LOG_CRITICAL("Could not execute query");
+        LOG_DEBUG("\t" << getLastExecutedQuery(m_stateUpdateQuery));
+        LOG_DEBUG(m_stateUpdateQuery.lastError());
+        LOG_DEBUG("Most likely the SQL table column names are different from ProtoBuf message field names");
+    } else {
+        LOG_DEBUG("Status update stored in SQL db");
+    }
     m_stateUpdateQuery.finish();
 }
