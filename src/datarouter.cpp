@@ -1,6 +1,5 @@
 #include "datarouter.h"
 #include "logging.h"
-#include <QtCore>
 
 /* TODO:
  *  SPI handler
