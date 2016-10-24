@@ -1,0 +1,132 @@
+// definition of the messages exchanged between uC and CM inside the CCU unit
+// these messages are wrapped inside the defined serial protocol
+syntax = "proto2";
+
+message ContainerMessage {
+  // enum TYPE { StatusUpdate = 1; CommandRequest = 2; CommandResponse = 3; }
+  // required TYPE type = 1; // may be redundant because ProtoBuf generates WhichOneOf method
+
+  oneof message {
+      StatusUpdate statusUpdate       = 1;
+      CommandRequest commandRequest   = 2;
+      CommandResponse commandResponse = 3;
+  }
+}
+
+message StatusUpdate{
+    enum SPIRIERRORS {
+        ERR_HV_CELL_UNDER_VOLTAGE = 1;
+        ERR_HV_CELL_OVER_VOLTAGE  = 2;
+        ERR_OTHER_ERRORS          = 3; // TODO: remove, replace with actual errors
+    }
+
+    optional int32 timestamp            = 1;
+
+    optional float voltageLV            = 2; // check if float is doable
+    optional float voltageHV            = 3;
+    // Geo info
+    optional float locLongitude         = 4;
+    optional float locLatitude          = 5;
+    optional float locAltitude          = 6;
+    optional float speedGPS             = 7;
+    optional float speedInverter        = 8;
+    optional float speedWheelSensor     = 9;
+    optional float speedDisplayed       = 10;
+    // Inverter
+    optional float minInverterCurr      = 11;
+    optional float maxInverterCurr      = 12;
+    optional float avgInverterCurr      = 13;
+    optional float tempInverter         = 14;
+    optional float tempMotor            = 15;
+    // Charger
+    optional float minChargerCurrent    = 16;
+    optional float maxChargerCurrent    = 17;
+    optional float avgChargerCurrent    = 18;
+    optional float tempCharger          = 19;
+    // DCDC
+    optional float tempDCDC             = 20;
+    optional bool fanDCDCState          = 21;
+    // Lights status
+    optional bool frontLong             = 22;
+    optional bool frontShort            = 23;
+    optional bool DRL                   = 24;
+    optional bool frontFog              = 25;
+    optional bool backFog               = 26;
+    optional bool breakLight            = 27;
+    // button statuses                  = 28;
+    optional bool hazardButton          = 29;
+    optional bool panicButton           = 30;
+    // seat related info
+    optional bool seatHeaterFR          = 31;
+    optional bool seatHeaterFL          = 32;
+    optional bool seatHeaterRR          = 33;
+    optional bool seatHeaterRL          = 34;
+
+    optional bool seatSensorFR          = 35;
+    optional bool seatSensorFL          = 36;
+    optional bool seatSensorRR          = 37;
+    optional bool seatSensorRL          = 38;
+    // stalk inputs
+    optional bool blinkerLeft           = 39;
+    optional bool blinkerRight          = 40;
+    // door status
+    optional bool doorOpenFR            = 41;
+    optional bool doorOpenFL            = 42;
+    optional bool doorOpenRR            = 43;
+    optional bool doorOpenRL            = 44;
+
+    optional bool doorLockedFR          = 45;
+    optional bool doorLockedFL          = 46;
+    optional bool doorLockedRR          = 47;
+    optional bool doorLockedRL          = 48;
+
+    optional uint64 activeErrors        = 49;
+}
+
+enum COMMAND_ORIGIN {
+    UC_POWER_MANAGER      = 1;
+    CM_VEHICLE_MONITOR    = 2;
+    SERVER_FLEET_MANAGER  = 3;
+}
+
+message CommandRequest {
+    enum TYPE {
+        SETDOORLOCK = 1;
+    }
+
+    message SetDoorLock {
+        optional bool locked = 1;
+    }
+
+    optional int32 timestamp               = 1; // at time request is generated
+    optional COMMAND_ORIGIN commandOrigin  = 2;
+    optional int32 counter                 = 3; // incremented for each command from same origin
+    optional TYPE type                     = 4;
+    oneof argument {                            // optional command arguments
+        SetDoorLock setDoorLock            = 5;
+    }
+}
+
+message CommandResponse {
+    enum RESULT {
+        SUCCESS          = 1; // no error, command executed
+        UNAUTHORIZED     = 2; // requester failed the authorization process
+        UNSUPPORTED      = 3; // command cannot be executed in current hw/sw configuration
+        TIMEOUT          = 4; // sub-system failed to respond in time
+        BLOCKED          = 5; // conditions don't allow the execution of command
+    }
+
+    message SoftwareVersion {
+        optional uint32 minor = 1;
+        optional uint32 major = 2;
+    }
+
+    optional int32 timestamp                = 1;  // at time response is generated
+    optional COMMAND_ORIGIN commandOrigin   = 2;  // same as request origin
+    optional int32 counter                  = 3;  // same request counter
+    optional RESULT result                  = 4;
+    optional string error_message           = 5;
+    oneof retval {                                // optional return values
+        SoftwareVersion softwareVersion     = 6;
+    }
+}

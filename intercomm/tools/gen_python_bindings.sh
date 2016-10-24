@@ -1,0 +1,1 @@
+protoc -I=.. ../MessageDefinitions.proto --python_out=.
