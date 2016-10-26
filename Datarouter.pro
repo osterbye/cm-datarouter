@@ -1,7 +1,4 @@
-LIBS += /usr/local/lib/libprotobuf.so
-
-PROTOS = ./intercomm/MessageDefinitions.proto
-
+!include(../local_conf.pri): error(local_conf.pri file not found)
 include(protobuf.pri)
 
 QT += core sql

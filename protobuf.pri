@@ -14,7 +14,17 @@
 # paths specify the PROTOPATH variable
 #
 
-PROTOPATH += ./intercomm
+linux-*:if(isEqual(QT_ARCH, "arm")) {
+    INCLUDEPATH += $${YOCTO_BUILD_DIR}/tmp/sysroots/apalis-imx6/usr/include/
+    LIBS += -L$${YOCTO_BUILD_DIR}/tmp/sysroots/apalis-imx6/usr/lib/
+} else {
+    CONFIG += link_pkgconfig
+    PKGCONFIG += protobuf
+}
+LIBS += -lprotobuf
+
+PROTOS = $$relative_path($$PWD, $$OUT_PWD)/intercomm/MessageDefinitions.proto
+PROTOPATH = $$relative_path($$PWD, $$OUT_PWD)/intercomm
 PROTOPATHS =
 for(p, PROTOPATH):PROTOPATHS += --proto_path=$${p}
 
