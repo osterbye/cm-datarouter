@@ -23,6 +23,7 @@ MockBus::~MockBus()
 
 void MockBus::readNextMessage()
 {
+    m_busDevice.seek(0);
     m_busArray = m_busDevice.read(2 + 1 + 3 + 2); // includes preamble, frame type and frame length
     if (m_busArray.length() != 2 + 1 + 3 + 2) {
         LOG_INFO("End of file, no more messages");
