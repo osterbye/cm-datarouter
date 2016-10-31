@@ -17,6 +17,7 @@
 linux-*:if(isEqual(QT_ARCH, "arm")) {
     INCLUDEPATH += $${YOCTO_BUILD_DIR}/tmp/sysroots/apalis-imx6/usr/include/
     LIBS += -L$${YOCTO_BUILD_DIR}/tmp/sysroots/apalis-imx6/usr/lib/
+    LIBS += -L$${YOCTO_BUILD_DIR}/tmp/sysroots/apalis-imx6/lib/
 } else {
     CONFIG += link_pkgconfig
     PKGCONFIG += protobuf
