@@ -10,7 +10,7 @@
 Datarouter::Datarouter(QObject *parent) : QObject(parent), m_busDevice(this), m_messenger(this),
     m_stateWriter(this)
 {
-    QObject::connect(&m_busDevice, &MockBus::newMessageReceived, &m_messenger,
+    QObject::connect(&m_busDevice, &SpiBus::newMessageReceived, &m_messenger,
                      &PBMessenger::receiveMessage);
     //QObject::connect(m_busDevice, &SpiBus::readyRead, &PBMessager.receiveInput);
     QObject::connect(&m_messenger, &PBMessenger::newStatusReceived, &m_stateWriter,

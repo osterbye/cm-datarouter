@@ -27,7 +27,7 @@ void PBMessenger::receiveMessage(QByteArray msg)
         LOG_INFO("Received Command Response message");
         emit newCommandResponseReceived(container.commandresponse());
     } else {
-        LOG_WARN("Unsupported message format!");
+        LOG_WARN("Unsupported message format! " << msg);
     }
 }
 

@@ -17,14 +17,16 @@ SOURCES += \
     src/datarouter.cpp \
     src/pbmessenger.cpp \
     src/mockbus.cpp \
-    src/statewriter.cpp
+    src/statewriter.cpp \
+    src/spibus.cpp
 
 HEADERS += \
     src/datarouter.h \
     src/pbmessenger.h \
     src/mockbus.h \
     src/statewriter.h \
-    src/logging.h
+    src/logging.h\
+    src/spibus.h
 
 DISTFILES += \
     protobuf.pri \

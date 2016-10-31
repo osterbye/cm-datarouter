@@ -2,6 +2,7 @@
 
 import MessageDefinitions_pb2
 import struct
+import crc64
 
 filename = 'sample_pb.bin'
 
@@ -23,6 +24,8 @@ for i in range(10):
   frame_length = len(FRAME_PREAMBLE) + len(FRAME_TYPE) + len(FRAME_RESERVED) + 2 + len(message_serialized) + len(frame_crc_serialized)
   frame_length_serialized = struct.pack('>H', frame_length)
   frame_serialized = b''.join([FRAME_PREAMBLE, FRAME_TYPE, FRAME_RESERVED, frame_length_serialized, message_serialized])
+  crc_hi, crc_lo = crc64.CRC64(frame_serialized)
+  frame_crc_serialized = struct.pack('>II', crc_hi, crc_lo)
   frame_serialized = frame_serialized + frame_crc_serialized
   frames.append(frame_serialized)
   print(''.join('\\x%02X' % n for n in message_serialized))
