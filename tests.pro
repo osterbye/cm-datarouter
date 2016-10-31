@@ -1,4 +1,5 @@
-LIBS += /usr/local/lib/libprotobuf.so
+#LIBS += /usr/local/lib/libprotobuf.so
+LIBS += -L"/usr/lib/x86_64-linux-gnu/" -lprotobuf
 
 PROTOS = ./intercomm/MessageDefinitions.proto
 

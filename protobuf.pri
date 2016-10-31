@@ -14,7 +14,7 @@
 # paths specify the PROTOPATH variable
 #
 
-PROTOPATH += ./intercomm
+PROTOPATH += ../cm-datarouter/intercomm
 PROTOPATHS =
 for(p, PROTOPATH):PROTOPATHS += --proto_path=$${p}
 

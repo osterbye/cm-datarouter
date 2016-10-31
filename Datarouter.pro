@@ -1,8 +1,10 @@
-LIBS += /usr/local/lib/libprotobuf.so
+#LIBS += /usr/local/lib/libprotobuf.so
+LIBS += -L"/usr/lib/x86_64-linux-gnu/" -lprotobuf
 
 PROTOS = ./intercomm/MessageDefinitions.proto
 
 include(protobuf.pri)
+include(src/pubnub/pubnub.pri)
 
 QT += core sql
 QT -= gui
@@ -20,18 +22,21 @@ SOURCES += \
     src/datarouter.cpp \
     src/pbmessenger.cpp \
     src/mockbus.cpp \
-    src/statewriter.cpp
+    src/statewriter.cpp \
+    src/pubnub_spiri.cpp \
 
 HEADERS += \
     src/datarouter.h \
     src/pbmessenger.h \
     src/mockbus.h \
     src/statewriter.h \
-    src/logging.h
+    src/logging.h \
+    src/pubnub_spiri.h \
 
 DISTFILES += \
     protobuf.pri \
-    MessageDefinitions.pb
+    MessageDefinitions.pb \
+    src/pubnub/pubnub.pri
 
 release:DESTDIR = release
 release:OBJECTS_DIR = release/.obj

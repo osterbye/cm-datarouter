@@ -49,15 +49,15 @@ QVariant PBMessenger::getMessageField(const Message *message, const FieldDescrip
         case FieldDescriptor::Type::TYPE_INT32:
             variant = QVariant(refl->GetInt32(*message, field));
             break;
-        case FieldDescriptor::Type::TYPE_INT64:
+        /*case FieldDescriptor::Type::TYPE_INT64:
             variant = QVariant(refl->GetInt64(*message, field));
-            break;
+            break;*/
         case FieldDescriptor::Type::TYPE_SINT32:
             variant = QVariant(refl->GetInt32(*message, field));
             break;
-        case FieldDescriptor::Type::TYPE_SINT64:
+        /*case FieldDescriptor::Type::TYPE_SINT64:
             variant = QVariant(refl->GetInt64(*message, field));
-            break;
+            break;*/
         case FieldDescriptor::Type::TYPE_BOOL:
             variant = QVariant(refl->GetBool(*message, field));
             break;
