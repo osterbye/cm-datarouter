@@ -1,0 +1,61 @@
+CREATE TABLE measurements (
+    timestamp               INT,
+    voltageLV               FLOAT,
+    voltageHV               FLOAT,
+    /* Geo info */
+    locLongitude            FLOAT,
+    locLatitude             FLOAT,
+    locAltitude             FLOAT,
+    speedGPS                FLOAT,
+    speedInverter           FLOAT,
+    speedWheelSensor        FLOAT,
+    speedDisplayed          FLOAT,
+    /* Inverter */
+    minInverterCurr         FLOAT,
+    maxInverterCurr         FLOAT,
+    avgInverterCurr         FLOAT,
+    tempInverter            FLOAT,
+    tempMotor               FLOAT,
+    /* Charger */
+    minChargerCurrent       FLOAT,
+    maxChargerCurrent       FLOAT,
+    avgChargerCurrent       FLOAT,
+    tempCharger             FLOAT,
+    /* DCDC */
+    tempDCDC                FLOAT,
+    fanDCDCState            INT,
+    /* Lights status */
+    frontLong               INT,
+    frontShort              INT,
+    DRL                     INT,
+    frontFog                INT,
+    backFog                 INT,
+    breakLight              INT,
+    /* button statuses, */
+    hazardButton            INT,
+    panicButton             INT,
+    /* seat related info */
+    seatHeaterFR            INT,
+    seatHeaterFL            INT,
+    seatHeaterRR            INT,
+    seatHeaterRL            INT,
+    seatSensorFR            INT,
+    seatSensorFL            INT,
+    seatSensorRR            INT,
+    seatSensorRL            INT,
+    /* stalk inputs */
+    blinkerLeft             INT,
+    blinkerRight            INT,
+    /* door status */
+    doorOpenFR              INT,
+    doorOpenFL              INT,
+    doorOpenRR              INT,
+    doorOpenRL              INT,
+    doorLockedFR            INT,
+    doorLockedFL            INT,
+    doorLockedRR            INT,
+    doorLockedRL            INT,
+    activeErrors            INT,
+    /* dump of whole message, for debugging */
+    pbMessageDump           BLOB
+);
