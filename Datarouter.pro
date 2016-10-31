@@ -1,5 +1,6 @@
 !include(../local_conf.pri): error(local_conf.pri file not found)
 include(protobuf.pri)
+include(src/pubnub/pubnub.pri)
 
 QT += core sql
 QT -= gui
@@ -18,7 +19,8 @@ SOURCES += \
     src/pbmessenger.cpp \
     src/mockbus.cpp \
     src/statewriter.cpp \
-    src/spibus.cpp
+    src/spibus.cpp \
+    src/pubnub_spiri.cpp
 
 HEADERS += \
     src/datarouter.h \
@@ -26,7 +28,8 @@ HEADERS += \
     src/mockbus.h \
     src/statewriter.h \
     src/logging.h\
-    src/spibus.h
+    src/spibus.h \
+    src/pubnub_spiri.h
 
 DISTFILES += \
     protobuf.pri \
