@@ -46,3 +46,7 @@ debug:OBJECTS_DIR = debug/.obj
 debug:MOC_DIR = debug/.moc
 debug:RCC_DIR = debug/.rcc
 debug:UI_DIR = debug/.ui
+
+# install
+target.path = /usr/bin
+INSTALLS += target

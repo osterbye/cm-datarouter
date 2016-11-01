@@ -21,8 +21,12 @@ signals:
     void newStatusReceived(StatusUpdate status);
     void newCommandRequestReceived(CommandRequest request);
     void newCommandResponseReceived(CommandResponse response);
+
+    void sendCmdRequest(QByteArray payload);
+
 public slots:
     void receiveMessage(QByteArray msg);
+    void cmdRequestDoorLock(bool lock);
 };
 
 #endif // PBMESSENGER_H

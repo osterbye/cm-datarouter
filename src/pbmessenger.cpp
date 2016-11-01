@@ -77,3 +77,12 @@ QVariant PBMessenger::getMessageField(const Message *message, const FieldDescrip
     }
     return variant;
 }
+
+void PBMessenger::cmdRequestDoorLock(bool lock)
+{
+    CommandRequest * doorCmdRequest = new CommandRequest();
+    doorCmdRequest->set_type(doorCmdRequest->SETDOORLOCK);
+    doorCmdRequest->mutable_setdoorlock()->set_locked(lock);
+    QByteArray serializedPayload = QByteArray::fromStdString(doorCmdRequest->SerializeAsString());
+    emit sendCmdRequest(serializedPayload);
+}

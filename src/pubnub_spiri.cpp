@@ -44,6 +44,11 @@ void Pubnub_spiri::pnSendMessage(QString const &channel, QJsonDocument const mes
     }
 }
 
+void Pubnub_spiri::sendStatus(QJsonObject status)
+{
+    pnSendMessage("vehicle_status", QJsonDocument(status));
+}
+
 void Pubnub_spiri::onPublish(pubnub_res result)
 {
     PN_DBG("Publish result: '" << pubnub_res_2_string(result) << "', response: " << d_pb_publish->last_publish_result() << "\n");
@@ -59,8 +64,16 @@ void Pubnub_spiri::onSubscribe(pubnub_res result)
         QList<QString> msg = d_pb_subscribe->get_all();
         for (int i = 0; i < msg.size(); ++i) {
             PN_DBG("subscribe message " + msg[i] + '\n');
+            QJsonValue cmdLock("lock");
+            QJsonValue cmdUnlock("unlock");
             QJsonDocument json = QJsonDocument::fromJson(msg[i].toUtf8());
             QJsonObject object = json.object();
+            QJsonValue cmd = object.value("doorlock");
+            if (cmd == cmdLock) {
+                emit cmdRequestDoorLock(true);
+            } else if (cmd == cmdUnlock) {
+                emit cmdRequestDoorLock(false);
+            }
 
             emit pnMessageReceived("chn-test", json);
 

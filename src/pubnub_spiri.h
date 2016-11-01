@@ -18,9 +18,11 @@ public:
 
 signals:
     void pnMessageReceived(QString const &channel, QJsonDocument const message);
+    void cmdRequestDoorLock(bool lock);
 
 public slots:
     void pnSendMessage(QString const &channel, QJsonDocument const message);
+    void sendStatus(QJsonObject status);
 
 private slots:
     void printMessageReceived(QString const &channel, QJsonDocument const message);

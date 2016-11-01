@@ -21,6 +21,7 @@ private:
     QStringList getFieldNames(const google::protobuf::Message *message);
 
 signals:
+    void sendStatusToServer(QJsonObject status);
 
 public slots:
     void receiveStatus(StatusUpdate status);

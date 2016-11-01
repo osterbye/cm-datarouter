@@ -1,5 +1,6 @@
 #include "datarouter.h"
 #include "logging.h"
+#include "pubnub_spiri.h"
 
 /* TODO:
  *  SPI handler
@@ -10,6 +11,12 @@
 Datarouter::Datarouter(QObject *parent) : QObject(parent), m_busDevice(this), m_messenger(this),
     m_stateWriter(this)
 {
+    m_pubnubHandler = new Pubnub_spiri(this);
+
+    connect(m_pubnubHandler, SIGNAL(cmdRequestDoorLock(bool)), &m_messenger , SLOT(cmdRequestDoorLock(bool)));
+    connect(&m_messenger, SIGNAL(sendCmdRequest(QByteArray)), &m_busDevice, SLOT(sendMessage(QByteArray)));
+    connect(&m_stateWriter, SIGNAL(sendStatusToServer(QJsonObject)), m_pubnubHandler, SLOT(sendStatus(QJsonObject)));
+
     QObject::connect(&m_busDevice, &SpiBus::newMessageReceived, &m_messenger,
                      &PBMessenger::receiveMessage);
     //QObject::connect(m_busDevice, &SpiBus::readyRead, &PBMessager.receiveInput);

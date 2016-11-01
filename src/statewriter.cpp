@@ -64,6 +64,7 @@ QStringList StateWriter::getFieldNames(const google::protobuf::Message *message)
 void StateWriter::receiveStatus(StatusUpdate status)
 {
     const Descriptor *desc = status.GetDescriptor();
+    QJsonObject jsonStatus;
     m_stateUpdateQuery.prepare(m_queryTemplate);
 
     // iterate through all fields: extract and bind values if field exists in message, otherwise bind null value
@@ -73,6 +74,7 @@ void StateWriter::receiveStatus(StatusUpdate status)
         QVariant fieldValue = PBMessenger::getMessageField(&status, field);
         QString fieldName = QString::fromStdString(":" + field->name());
         m_stateUpdateQuery.bindValue(fieldName, fieldValue);
+        jsonStatus.insert(fieldName, fieldValue.toJsonValue());
     }
     // the query is prepared, attempt to execute and report any errors
     if (!m_stateUpdateQuery.exec()) {
@@ -82,6 +84,8 @@ void StateWriter::receiveStatus(StatusUpdate status)
         LOG_DEBUG("Most likely the SQL table column names are different from ProtoBuf message field names");
     } else {
         LOG_DEBUG("Status update stored in SQL db");
+        if (!jsonStatus.isEmpty())
+            emit sendStatusToServer(jsonStatus);
     }
     m_stateUpdateQuery.finish();
 }
