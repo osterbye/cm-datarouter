@@ -105,7 +105,8 @@ void SpiBus::parseRxMessage() {
         // no preamble found in stream
         if (locPB2 < 0) {
             if (locPB1 != rxArray.length() - 1) {
-                LOG_DEBUG("discarding junk: " << rxArray);
+                if (rxArray.count('\x00') != rxArray.length())
+                    LOG_DEBUG("discarding junk: " << rxArray);
                 rxArray.clear();
             }
             return;
