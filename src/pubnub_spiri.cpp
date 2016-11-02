@@ -23,7 +23,7 @@ Pubnub_spiri::Pubnub_spiri(QObject *parent, QString keypub, QString keysub) :
 
     d_pb_subscribe.reset(new pubnub_qt(keypub,keysub));
     connect(d_pb_subscribe.data(), SIGNAL(outcome(pubnub_res)), this, SLOT(onSubscribe(pubnub_res)));
-    d_pb_subscribe->subscribe("chn-test"); // TODO - figure out a way of keeping track of subscribed channels
+    d_pb_subscribe->subscribe("vehicle_cmd"); // TODO - figure out a way of keeping track of subscribed channels
 
     connect(this, SIGNAL(pnMessageReceived(QString,QJsonDocument)), this, SLOT(printMessageReceived(QString,QJsonDocument)) );
 }
@@ -71,17 +71,19 @@ void Pubnub_spiri::onSubscribe(pubnub_res result)
             QJsonValue cmd = object.value("doorlock");
             if (cmd == cmdLock) {
                 emit cmdRequestDoorLock(true);
+                PN_DBG("LOCK THE DOOR");
             } else if (cmd == cmdUnlock) {
                 emit cmdRequestDoorLock(false);
+                PN_DBG("UNLOCK THE DOOR");
             }
 
-            emit pnMessageReceived("chn-test", json);
+            emit pnMessageReceived("vehicle_cmd", json);
 
         }
     }
 
 
-    result = d_pb_subscribe->subscribe("chn-test");
+    result = d_pb_subscribe->subscribe("vehicle_cmd");
     if (result != PNR_STARTED) {
         PN_DBG("subscribe failed new" << pubnub_res_2_string(result));
     }
