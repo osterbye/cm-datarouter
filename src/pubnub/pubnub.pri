@@ -6,12 +6,21 @@ INCLUDEPATH +=  $$PWD \
 
 DEPENDPATH +=   $$PWD/c-core/core
 
-SOURCES += $$PWD/c-core/qt/pubnub_qt.cpp
+# Spiri PubNub handling
+SOURCES +=  $$PWD/pubnubchannel.cpp
 
-HEADERS  += $$PWD/c-core/qt/pubnub_config.h \
+HEADERS +=  $$PWD/pubnubchannel.h
+
+
+# PubNub Qt wrapper
+SOURCES +=  $$PWD/c-core/qt/pubnub_qt.cpp
+
+HEADERS +=  $$PWD/c-core/qt/pubnub_config.h \
             $$PWD/c-core/qt/pubnub_internal.h \
             $$PWD/c-core/qt/pubnub_qt.h
 
+
+# PubNub C-core
 SOURCES +=  $$PWD/c-core/core/pubnub_ccore.c \
             $$PWD/c-core/core/pubnub_assert_std.c \
             $$PWD/c-core/core/pubnub_json_parse.c \
