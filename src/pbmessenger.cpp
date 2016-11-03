@@ -80,9 +80,11 @@ QVariant PBMessenger::getMessageField(const Message *message, const FieldDescrip
 
 void PBMessenger::cmdRequestDoorLock(bool lock)
 {
-    CommandRequest * doorCmdRequest = new CommandRequest();
+    ContainerMessage * container = new ContainerMessage();
+    CommandRequest * doorCmdRequest = container->mutable_commandrequest();
     doorCmdRequest->set_type(doorCmdRequest->SETDOORLOCK);
     doorCmdRequest->mutable_setdoorlock()->set_locked(lock);
-    QByteArray serializedPayload = QByteArray::fromStdString(doorCmdRequest->SerializeAsString());
+    QByteArray serializedPayload = QByteArray::fromStdString(container->SerializeAsString());
+    LOG_DEBUG("Sending lock/unlock command: " << serializedPayload);
     emit sendCmdRequest(serializedPayload);
 }
