@@ -16,6 +16,7 @@ SpiBus::SpiBus(QObject *parent) : QObject(parent)
     busDeviceFile.setFileName(deviceFilename);
     if (! busDeviceFile.open(QIODevice::ReadWrite)) {
         LOG_CRITICAL("Could not open specified input file: " << deviceFilename);
+        return;
     }
     fileDescriptor = busDeviceFile.handle();
 
