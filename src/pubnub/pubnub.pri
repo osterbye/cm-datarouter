@@ -7,9 +7,12 @@ INCLUDEPATH +=  $$PWD \
 DEPENDPATH +=   $$PWD/c-core/core
 
 # Spiri PubNub handling
-SOURCES +=  $$PWD/pubnubchannel.cpp
+SOURCES +=  $$PWD/pubnubchannel.cpp \
+            $$PWD/pubnubhandler.cpp
 
-HEADERS +=  $$PWD/pubnubchannel.h
+HEADERS +=  $$PWD/pubnubchannel.h \
+            $$PWD/pubnubhandler.h \
+            $$PWD/pubnubsubscriber.h
 
 
 # PubNub Qt wrapper

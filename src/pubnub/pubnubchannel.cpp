@@ -1,12 +1,13 @@
 #include "pubnubchannel.h"
+#include "pubnubsubscriber.h"
 
 extern "C" {
 #include "pubnub_helper.h"
 }
 
-#define DEBUG_PUBNUB
+#define DEBUG_PUBNUBCHANNEL
 
-#ifdef DEBUG_PUBNUB
+#ifdef DEBUG_PUBNUBCHANNEL
 #include "../logging.h"
 #else
 #define LOG_DEBUG(x)
@@ -14,9 +15,11 @@ extern "C" {
 #define LOG_WARN(x)
 #define LOG_CRITICAL(x)
 #endif
+
 PubNubChannel::PubNubChannel(const QString name, const QString keypub, const QString keysub, QObject *parent) :
     QObject(parent),
-    m_name(name)
+    m_name(name),
+    m_subscribers(0)
 {
     LOG_DEBUG("Creating PubNub channel '" << name << "'");
     d_pb_publish.reset(new pubnub_qt(keypub,keysub));
@@ -24,7 +27,7 @@ PubNubChannel::PubNubChannel(const QString name, const QString keypub, const QSt
 
     d_pb_subscribe.reset(new pubnub_qt(keypub,keysub));
     connect(d_pb_subscribe.data(), SIGNAL(outcome(pubnub_res)), this, SLOT(onSubscribe(pubnub_res)));
-    d_pb_subscribe->subscribe(name);
+    //d_pb_subscribe->subscribe(name);
 }
 
 PubNubChannel::~PubNubChannel()
@@ -32,9 +35,23 @@ PubNubChannel::~PubNubChannel()
     LOG_DEBUG("Destroying PubNub channel '" << m_name << "'");
 }
 
-QString PubNubChannel::name()
+const QString &PubNubChannel::name()
 {
     return m_name;
+}
+
+void PubNubChannel::subscribe(const PubNubSubscriber *receiver)
+{
+    connect(this, SIGNAL(newMessage(QString,QStringList)), receiver, SLOT(PubNubReceive(QString,QStringList)));
+    if (1 == ++m_subscribers)
+        d_pb_subscribe->subscribe(m_name);
+}
+
+void PubNubChannel::unsubscribe(const PubNubSubscriber *receiver)
+{
+    disconnect(this, SIGNAL(newMessage(QString,QStringList)), receiver, SLOT(PubNubReceive(QString,QStringList)));
+    if (0 > --m_subscribers)
+        m_subscribers = 0;
 }
 
 bool PubNubChannel::sendMessage(const QString &message)
@@ -63,8 +80,10 @@ void PubNubChannel::onSubscribe(pubnub_res result)
         emit newMessage(m_name, messages);
     }
 
-    result = d_pb_subscribe->subscribe(m_name);
-    if (result != PNR_STARTED) {
-        LOG_WARN("subscribe failed new" << pubnub_res_2_string(result));
+    if (m_subscribers > 0) {
+        result = d_pb_subscribe->subscribe(m_name);
+        if (result != PNR_STARTED) {
+            LOG_WARN("subscribe failed new" << pubnub_res_2_string(result));
+        }
     }
 }
