@@ -17,7 +17,7 @@ public:
 
     void subscribe(const QString &channelName, const PubNubSubscriber *receiver);
     void unsubscribe(const QString &channelName, const PubNubSubscriber *receiver);
-    bool sendMessage(const QString &channel, QJsonDocument const &message);
+    bool sendMessage(const QString &channelName, QJsonDocument const &message);
 
 private:
     int getChannelIndex(const QString &channelName);
