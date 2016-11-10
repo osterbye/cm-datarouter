@@ -1,9 +1,10 @@
 /*!
  * \class PubNubChannel
- * \brief Class representing a single PubNub channel.
+ * \brief Class representing a single PubNub channel.<BR>
+ * Do not use this class directly. Use the PubNubHandler to access channels.
  *
  * An instance of PubNubChannel provides read and write access to a single
- * PubNub channel.
+ * PubNub channel.<BR>
  * Classes can subscribe to automatically receive messages arriving on the
  * specific channel by inheriting from the PubNubSubscriber class.
  */
