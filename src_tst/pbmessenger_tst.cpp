@@ -35,7 +35,7 @@ void PBMessenger_Tst::emptyMessage()
 void PBMessenger_Tst::statusMessage()
 {
     ContainerMessage cm;
-    cm.mutable_statusupdate();
+    cm. mutable_status();
     QByteArray array(cm.SerializeAsString().c_str());
     m_messenger->receiveMessage(array);
     QCOMPARE(m_spyStatus->count(),   1);

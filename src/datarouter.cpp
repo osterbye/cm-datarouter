@@ -11,7 +11,7 @@
 Datarouter::Datarouter(QObject *parent) : QObject(parent), m_busDevice(this), m_messenger(this),
     m_stateWriter(this)
 {
-    m_pubnubHandler = new Pubnub_spiri(this, "pub-c-38db667a-fc13-4740-bbfc-c2a9298c1b22", "sub-c-edf80ad4-912f-11e6-bb6b-0619f8945a4f");
+    m_pubnubHandler = new Pubnub_spiri(this, "pub-c-2b9e1093-85a3-487e-84b7-759d9fbc69e7", "sub-c-1da6dcd8-9130-11e6-8409-0619f8945a4f");
 
     connect(m_pubnubHandler, SIGNAL(cmdRequestDoorLock(bool)), &m_messenger , SLOT(cmdRequestDoorLock(bool)));
     connect(&m_messenger, SIGNAL(sendCmdRequest(QByteArray)), &m_busDevice, SLOT(sendMessage(QByteArray)));

@@ -2,85 +2,69 @@
 // these messages are wrapped inside the defined serial protocol
 syntax = "proto2";
 
-message ContainerMessage {
-  // enum TYPE { StatusUpdate = 1; CommandRequest = 2; CommandResponse = 3; }
-  // required TYPE type = 1; // may be redundant because ProtoBuf generates WhichOneOf method
+// specifications of "custom options", which is meta-data describing how the
+// information is used in different parts of system
+import "google/protobuf/descriptor.proto";
 
+// lists all possible locations where signal/value can be generated or consumed
+// full chain is UC -> CM -> DB -> CL 
+//   if source is CM and sink is CL, it is implied that it also has to go through DB
+//   if source is UC and sink is UC, the signal never leaves UC board
+enum FieldEndPoint {
+    UC = 1;  // micro-controller board
+    CM = 2;  // Computation Module board
+    DB = 3;  // Database on CM board
+    CL = 4;  // cloud software
+}
+
+extend google.protobuf.FieldOptions {
+  optional FieldEndPoint source = 50000;
+  optional FieldEndPoint sink   = 50001;
+}
+
+extend google.protobuf.FileOptions {
+  optional uint32 FileVersionMajor = 50010;
+  optional uint32 FileVersionMinor = 50011;
+}
+
+option (FileVersionMajor) = 0;
+option (FileVersionMinor) = 1;
+
+// container message that encapsulates all other messages
+message ContainerMessage {
   oneof message {
-      StatusUpdate statusUpdate       = 1;
+      StatusUpdate status             = 1;
       CommandRequest commandRequest   = 2;
       CommandResponse commandResponse = 3;
   }
 }
 
 message StatusUpdate{
-    enum SPIRIERRORS {
-        ERR_HV_CELL_UNDER_VOLTAGE = 1;
-        ERR_HV_CELL_OVER_VOLTAGE  = 2;
-        ERR_OTHER_ERRORS          = 3; // TODO: remove, replace with actual errors
-    }
+    optional int32 timestamp            = 1    [(source) = UC, (sink) = DB];
 
-    optional int32 timestamp            = 1;
-
-    optional float voltageLV            = 2; // check if float is doable
-    optional float voltageHV            = 3;
     // Geo info
-    optional float locLongitude         = 4;
-    optional float locLatitude          = 5;
-    optional float locAltitude          = 6;
-    optional float speedGPS             = 7;
-    optional float speedInverter        = 8;
-    optional float speedWheelSensor     = 9;
-    optional float speedDisplayed       = 10;
-    // Inverter
-    optional float minInverterCurr      = 11;
-    optional float maxInverterCurr      = 12;
-    optional float avgInverterCurr      = 13;
-    optional float tempInverter         = 14;
-    optional float tempMotor            = 15;
-    // Charger
-    optional float minChargerCurrent    = 16;
-    optional float maxChargerCurrent    = 17;
-    optional float avgChargerCurrent    = 18;
-    optional float tempCharger          = 19;
-    // DCDC
-    optional float tempDCDC             = 20;
-    optional bool fanDCDCState          = 21;
-    // Lights status
-    optional bool frontLong             = 22;
-    optional bool frontShort            = 23;
-    optional bool DRL                   = 24;
-    optional bool frontFog              = 25;
-    optional bool backFog               = 26;
-    optional bool breakLight            = 27;
-    // button statuses                  = 28;
-    optional bool hazardButton          = 29;
-    optional bool panicButton           = 30;
-    // seat related info
-    optional bool seatHeaterFR          = 31;
-    optional bool seatHeaterFL          = 32;
-    optional bool seatHeaterRR          = 33;
-    optional bool seatHeaterRL          = 34;
+    optional float locLongitude         = 4    [(source) = UC, (sink) = CL];
+    optional float locLatitude          = 5    [(source) = UC, (sink) = CL];
+    optional float locAltitude          = 6    [(source) = UC, (sink) = CL];
+    optional float speedGPS             = 7    [(source) = UC, (sink) = CL];
+    // Seats
+    optional bool seatOccupiedFR          = 35   [(source) = UC, (sink) = CL];
+    optional bool seatOccupiedFL          = 36   [(source) = UC, (sink) = CL];
+    optional bool seatOccupiedRR          = 37   [(source) = UC, (sink) = CL];
+    optional bool seatOccupiedRL          = 38   [(source) = UC, (sink) = CL];
 
-    optional bool seatSensorFR          = 35;
-    optional bool seatSensorFL          = 36;
-    optional bool seatSensorRR          = 37;
-    optional bool seatSensorRL          = 38;
     // stalk inputs
-    optional bool blinkerLeft           = 39;
-    optional bool blinkerRight          = 40;
+    optional bool blinkerLeft           = 200   [(source) = UC, (sink) = CL];
+    optional bool blinkerRight          = 201   [(source) = UC, (sink) = CL];
     // door status
-    optional bool doorOpenFR            = 41;
-    optional bool doorOpenFL            = 42;
-    optional bool doorOpenRR            = 43;
-    optional bool doorOpenRL            = 44;
+    optional bool doorOpenFR            = 202   [(source) = UC, (sink) = CL];
+    optional bool doorOpenFL            = 203   [(source) = UC, (sink) = CL];
+    optional bool doorOpenRR            = 204   [(source) = UC, (sink) = CL];
+    optional bool doorOpenRL            = 205   [(source) = UC, (sink) = CL];
 
-    optional bool doorLockedFR          = 45;
-    optional bool doorLockedFL          = 46;
-    optional bool doorLockedRR          = 47;
-    optional bool doorLockedRL          = 48;
+    optional bool vehicleLocked         = 206   [(source) = UC, (sink) = CL];
 
-    optional uint64 activeErrors        = 49;
+    //repeated SPIRIERRORS activeError    = 49   [(source) = UC, (sink) = CL];
 }
 
 enum COMMAND_ORIGIN {
@@ -92,6 +76,9 @@ enum COMMAND_ORIGIN {
 message CommandRequest {
     enum TYPE {
         SETDOORLOCK = 1;
+        COMFORT     = 2;
+        LIGHTS      = 3;
+        DRIVETRAIN  = 4;
     }
 
     message SetDoorLock {
@@ -116,7 +103,7 @@ message CommandResponse {
         BLOCKED          = 5; // conditions don't allow the execution of command
     }
 
-    message SoftwareVersion {
+    message SoftwareFileVersion {
         optional uint32 minor = 1;
         optional uint32 major = 2;
     }
@@ -127,6 +114,6 @@ message CommandResponse {
     optional RESULT result                  = 4;
     optional string error_message           = 5;
     oneof retval {                                // optional return values
-        SoftwareVersion softwareVersion     = 6;
+        SoftwareFileVersion softwareFileVersion     = 6;
     }
 }

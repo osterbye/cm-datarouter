@@ -17,9 +17,9 @@ void PBMessenger::receiveMessage(QByteArray msg)
 {
     ContainerMessage container;
     container.ParseFromArray(msg, msg.size());
-    if (container.has_statusupdate()) {
+    if (container.has_status()) {
         LOG_INFO("Received Status Update message");
-        emit newStatusReceived(container.statusupdate());
+        emit newStatusReceived(container.status());
     } else if (container.has_commandrequest()) {
         LOG_INFO("Received Command Request message");
         emit newCommandRequestReceived(container.commandrequest());
