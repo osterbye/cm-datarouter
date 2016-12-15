@@ -33,7 +33,7 @@ private:
     static const int spiMsgLength = 8;
     static const char PREAMBLE_BYTE1 = 0xAAu;
     static const char PREAMBLE_BYTE2 = 0x55u;
-    static const int MAX_FRAME_LENGTH = 10 * 1024;
+    static const int MAX_FRAME_LENGTH = 1024;
     static const int FRAME_OVERHEAD = 2 + 1 + 3 + 2 + 8; // preamble, type, reserved, length, crc
     static const int MESSAGE_TYPE_PROTOBUF = 1;
 

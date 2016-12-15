@@ -22,7 +22,7 @@ SpiBus::SpiBus(QObject *parent) : QObject(parent)
 
     const uint8_t mode = 1;
     const uint8_t bits = 8;
-    const uint32_t speed = 1000;
+    const uint32_t speed = 125 * 4;
     const uint16_t delay = 0;
 
     int ret;
@@ -68,7 +68,7 @@ SpiBus::SpiBus(QObject *parent) : QObject(parent)
     // Run task periodically
     QObject::connect(&m_readTimer, &QTimer::timeout, this, &SpiBus::pollBus);
     m_readTimer.setSingleShot(false);
-    m_readTimer.start(20);
+    m_readTimer.start(10);
 }
 
 SpiBus::~SpiBus()
@@ -94,7 +94,7 @@ enum parseMachine {
     STATE_WAITING_FRAME
 };
 
-void SpiBus::parseRxMessageSM() {
+void SpiBus::parseRxMessage() {
     static enum parseMachine parsing_state = STATE_WAITING_PREAMBLE;
     int locPB1 = rxArray.indexOf(PREAMBLE_BYTE1);
     int locPB2 = rxArray.indexOf(PREAMBLE_BYTE2);
@@ -162,62 +162,6 @@ void SpiBus::parseRxMessageSM() {
     }
 }
 
-void SpiBus::parseRxMessage() {
-    int locPB1 = rxArray.indexOf(PREAMBLE_BYTE1);
-    int locPB2 = rxArray.indexOf(PREAMBLE_BYTE2);
-
-    // if preamble not in place, we need to discard some data
-    if (locPB1 != 0 || locPB2 != 1) {
-
-        // preamble found in middle of stream
-        if ((locPB2 == locPB1 + 1) && (locPB1 >= 0)) {
-            // TODO: remove printing of discarged data after com is tested
-            if (locPB1 > 0 && (rxArray.mid(0, locPB1).count('\x00') != locPB1))
-                LOG_DEBUG("discarding junk: " << rxArray.mid(0, locPB1));
-            rxArray = rxArray.mid(locPB1); // TODO: unnecessary memory allocation? copy instead?
-        }
-
-        // no preamble found in stream
-        if (locPB2 < 0) {
-            if (locPB1 != rxArray.length() - 1) {
-                if (rxArray.count('\x00') != rxArray.length())
-                    LOG_DEBUG("discarding junk: " << rxArray);
-                rxArray.clear();
-            }
-            return;
-        }
-    }
-
-    if (rxArray.length() < FRAME_OVERHEAD)
-        return; // we don't have enough of stream to decode frame
-
-    if (rxArray.at(2) != MESSAGE_TYPE_PROTOBUF) {
-        QString out;
-        LOG_WARN(out.sprintf("Discarding message with unsupported type 0x%02X", rxArray.at(2)));
-        rxArray = rxArray.mid(2); // remove preamble of unparsable frame
-        return;
-    }
-
-    int frameLength =  (rxArray.at(6) << 8) + rxArray.at(7);
-    int messageLength = frameLength - FRAME_OVERHEAD; // removing preamble, type, reserved, length, crc
-
-    if ((frameLength < FRAME_OVERHEAD) || frameLength > MAX_FRAME_LENGTH) {
-        LOG_WARN("Discarding frame of impossible length " << frameLength);
-        rxArray = rxArray.mid(2); // remove preamble of unparsable message
-        return;
-    }
-
-    if (rxArray.length() < frameLength)
-        return; // not enough data in stream
-        // TODO: instead of returning we should check for more preambles within buffer
-        // so we catch next frames without delays if our current frame is invalid
-
-    // TODO: do CRC check on frame
-
-    emit newMessageReceived(rxArray.mid(2 + 1 + 3 + 2, messageLength));
-    rxArray = rxArray.mid(frameLength); // remove frame from buffer
-}
-
 void SpiBus::pollBus()
 {
     int ret;
@@ -237,7 +181,8 @@ void SpiBus::pollBus()
 
     // incomming stream is just concatinated
     rxArray.append((char *) rx, spiMsgLength);
+    LOG_DEBUG("spi RX: " << QString().fromLatin1((const char*)rx, spiMsgLength).toLatin1().toHex());
 
     // try to make sense of stream and remove parsed sections from rxArray
-    parseRxMessageSM();
+    parseRxMessage();
 }
