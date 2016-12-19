@@ -5,6 +5,7 @@
 #include <QJsonDocument>
 
 class PubNubHandler;
+class QNetworkSession;
 
 class PubNubTest : public PubNubSubscriber
 {
@@ -16,8 +17,12 @@ public:
 private:
     QJsonDocument getMessage();
 
+private slots:
+    void sessionOpened();
+
 private:
     PubNubHandler *m_handler;
+    QNetworkSession *m_session;
     int m_counter;
     QString m_channelName;
 };
