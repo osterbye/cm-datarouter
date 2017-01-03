@@ -34,7 +34,7 @@ for(p, PROTOPATH):PROTOPATHS += --proto_path=$${p}
 protobuf_decl.name = protobuf header
 protobuf_decl.input = PROTOS
 protobuf_decl.output = ${QMAKE_FILE_BASE}.pb.h
-protobuf_decl.commands = protoc --cpp_out="." $${PROTOPATHS} ${QMAKE_FILE_NAME}
+protobuf_decl.commands = $${YOCTO_BUILD_DIR}/tmp/sysroots/x86_64-linux/usr/bin/protoc --cpp_out="." $${PROTOPATHS} ${QMAKE_FILE_NAME}
 protobuf_decl.variable_out = GENERATED_FILES
 
 QMAKE_EXTRA_COMPILERS += protobuf_decl
