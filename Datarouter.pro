@@ -5,14 +5,21 @@ include(src/pubnub/pubnub.pri)
 QT += core sql
 QT -= gui
 
-CONFIG += qt c++11
-
-TARGET = Datarouter
-CONFIG += console
+CONFIG += qt c++11 console
 CONFIG -= app_bundle
 
+TARGET = datarouter
 TEMPLATE = app
 
+# sysroot flags
+QMAKE_CFLAGS -= --sysroot=$$[QT_SYSROOT]
+QMAKE_CFLAGS += --sysroot=$${YOCTO_BUILD_DIR}/tmp/sysroots/apalis-imx6
+QMAKE_CXXFLAGS -= --sysroot=$$[QT_SYSROOT]
+QMAKE_CXXFLAGS += --sysroot=$${YOCTO_BUILD_DIR}/tmp/sysroots/apalis-imx6
+QMAKE_LFLAGS -= --sysroot=$$[QT_SYSROOT]
+QMAKE_LFLAGS += --sysroot=$${YOCTO_BUILD_DIR}/tmp/sysroots/apalis-imx6
+
+# files
 SOURCES += \
     src/main.cpp \
     src/datarouter.cpp \
@@ -32,9 +39,9 @@ HEADERS += \
     src/pubnub_spiri.h
 
 DISTFILES += \
-    protobuf.pri \
     MessageDefinitions.pb
 
+# build directories
 release:DESTDIR = release
 release:OBJECTS_DIR = release/.obj
 release:MOC_DIR = release/.moc
