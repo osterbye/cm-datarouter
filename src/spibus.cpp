@@ -20,7 +20,7 @@ SpiBus::SpiBus(QObject *parent) : QObject(parent)
     }
     fileDescriptor = busDeviceFile.handle();
 
-    const uint8_t mode = 1;
+    const uint8_t mode = 0;
     const uint8_t bits = 8;
     const uint32_t speed = 125 * 4;
     const uint16_t delay = 0;
