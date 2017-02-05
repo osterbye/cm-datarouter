@@ -74,7 +74,7 @@ void StateWriter::receiveStatus(StatusUpdate status)
         QVariant fieldValue = PBMessenger::getMessageField(&status, field);
         QString fieldName = QString::fromStdString(":" + field->name());
         m_stateUpdateQuery.bindValue(fieldName, fieldValue);
-        jsonStatus.insert(fieldName, QJsonValue(fieldValue.toString()));
+        jsonStatus.insert(QString::fromStdString(field->name()), QJsonValue(fieldValue.toString()));
         LOG_DEBUG("name: " << fieldName << ", value: " << fieldValue);
     }
     // the query is prepared, attempt to execute and report any errors
