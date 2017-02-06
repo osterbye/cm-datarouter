@@ -22,7 +22,7 @@ SpiBus::SpiBus(QObject *parent) : QObject(parent)
 
     const uint8_t mode = 0;
     const uint8_t bits = 8;
-    const uint32_t speed = 125 * 4 * 1000;
+    const uint32_t speed = 125 * 4 * 10;
     const uint16_t delay = 0;
 
     int ret;
