@@ -8,6 +8,7 @@
 #include "statewriter.h"
 
 class Pubnub_spiri;
+class RemoteControl;
 
 class Datarouter : public QObject
 {
@@ -27,6 +28,7 @@ private:
     StateWriter m_stateWriter;
 
     Pubnub_spiri *m_pubnubHandler;
+    RemoteControl *m_rc;
 };
 
 #endif // DATAROUTER_H

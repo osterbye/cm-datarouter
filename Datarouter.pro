@@ -1,6 +1,7 @@
 !include(../local_conf.pri): error(local_conf.pri file not found)
 include(protobuf.pri)
 include(src/pubnub/pubnub.pri)
+include(src/rc/rc.pri)
 
 QT += core sql
 QT -= gui
