@@ -79,10 +79,16 @@ message CommandRequest {
         COMFORT     = 2;
         LIGHTS      = 3;
         DRIVETRAIN  = 4;
+        AP102CTRL   = 5;
     }
 
     message SetDoorLock {
         optional bool locked = 1;
+    }
+
+    message Ap102Control {
+        optional float speed = 1;
+        optional float direction = 2;
     }
 
     optional int32 timestamp               = 1; // at time request is generated
@@ -91,6 +97,7 @@ message CommandRequest {
     optional TYPE type                     = 4;
     oneof argument {                            // optional command arguments
         SetDoorLock setDoorLock            = 5;
+        Ap102Control ap102Control          = 6;
     }
 }
 
