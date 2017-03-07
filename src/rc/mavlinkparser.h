@@ -9,7 +9,12 @@ class MAVLinkParser : public QObject
 public:
     explicit MAVLinkParser(QObject *parent = 0);
 
+    quint16 droppedPackages();
+
 signals:
+    void heartbeat();
+    void control(float throttle, float angle);
+    void packageLoss(quint16 count);
 
 public slots:
     void communicationReceive(QByteArray ba);

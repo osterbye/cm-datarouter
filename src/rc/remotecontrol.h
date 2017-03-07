@@ -13,7 +13,13 @@ public:
     explicit RemoteControl(QString host, quint16 port, QObject *parent = 0);
 
 signals:
+    void heartbeat();
+    void control(float throttle, float angle);
+    void packageLoss(quint16 count);
     void mavlinkMessage(QByteArray ba);
+
+private:
+    void initConnection();
 
 private slots:
     void connected();

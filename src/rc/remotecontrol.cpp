@@ -1,11 +1,14 @@
 #include "remotecontrol.h"
 #include "mavlinkparser.h"
-#include <QDebug>
+#include "rclogging.h"
 
 RemoteControl::RemoteControl(QString host, quint16 port, QObject *parent) :
     QObject(parent), m_host(host), m_port(port)
 {
     m_parser = new MAVLinkParser(this);
+    connect(m_parser, SIGNAL(heartbeat()), this, SIGNAL(heartbeat()));
+    connect(m_parser, SIGNAL(control(float,float)), this, SIGNAL(control(float,float)));
+    connect(m_parser, SIGNAL(packageLoss(quint16)), this, SIGNAL(packageLoss(quint16)));
     connect(this, SIGNAL(mavlinkMessage(QByteArray)), m_parser, SLOT(communicationReceive(QByteArray)));
 
     m_socket = new QTcpSocket(this);
@@ -14,28 +17,35 @@ RemoteControl::RemoteControl(QString host, quint16 port, QObject *parent) :
     connect(m_socket, SIGNAL(disconnected()),this, SLOT(disconnected()));
     connect(m_socket, SIGNAL(readyRead()),this, SLOT(readyRead()));
 
+    initConnection();
+}
+
+void RemoteControl::initConnection()
+{
     m_socket->connectToHost(m_host, m_port);
-    qDebug() << "[RC] " << "Connecting to " << m_host << " port " << m_port;
+    LOG_DEBUG("Connecting to " << m_host << " port " << m_port);
 }
 
 void RemoteControl::connected() {
-    qDebug() << "[RC] " << "Connected to " << m_host << " port " << m_port;
+    LOG_DEBUG("Connected to " << m_host << " port " << m_port);
 }
 
 void RemoteControl::disconnected() {
     m_socket->deleteLater();
-    qDebug() << "[RC] " << "Disconnected";
+    LOG_DEBUG("Disconnected");
 }
 
 void RemoteControl::error(QAbstractSocket::SocketError err) {
-    qDebug() << "[RC] " << "Error: " << err;
+    LOG_DEBUG("Error: " << err);
+    m_socket->reset();
+    initConnection();
 }
 
 void RemoteControl::readyRead() {
     QByteArray buffer;
     if (m_socket->bytesAvailable()) {
         buffer = m_socket->readAll();
-        qDebug() << "[RC] " << "Got Data: \n\t" << buffer;
+        LOG_DEBUG("Got Data: \n\t" << buffer);
         emit mavlinkMessage(buffer);
     }
 }

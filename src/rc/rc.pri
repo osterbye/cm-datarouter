@@ -11,5 +11,6 @@ SOURCES += \
 
 HEADERS += \
     $$PWD/remotecontrol.h \
-    $$PWD/mavlinkparser.h
+    $$PWD/mavlinkparser.h \
+    $$PWD/rclogging.h
 
