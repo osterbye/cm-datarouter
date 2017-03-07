@@ -3,8 +3,6 @@ QT += network
 INCLUDEPATH += $$PWD \
     $$PWD/mavlink/include
 
-#DEPENDPATH += $$PWD/c-core/core
-
 SOURCES += \
     $$PWD/remotecontrol.cpp \
     $$PWD/mavlinkparser.cpp

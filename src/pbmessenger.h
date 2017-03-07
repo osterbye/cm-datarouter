@@ -27,6 +27,9 @@ signals:
 public slots:
     void receiveMessage(QByteArray msg);
     void cmdRequestDoorLock(bool lock);
+    void rcHeartbeat();
+    void rcControl(float throttle, float angle);
+
 };
 
 #endif // PBMESSENGER_H

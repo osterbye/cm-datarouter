@@ -88,3 +88,20 @@ void PBMessenger::cmdRequestDoorLock(bool lock)
     LOG_DEBUG("Sending lock/unlock command: " << serializedPayload);
     emit sendCmdRequest(serializedPayload);
 }
+
+void PBMessenger::rcHeartbeat()
+{
+    // TODO: should we repeat last control cmd for the heartbeat?
+}
+
+void PBMessenger::rcControl(float throttle, float angle)
+{
+    ContainerMessage * container = new ContainerMessage();
+    CommandRequest * cmdRequest = container->mutable_commandrequest();
+    cmdRequest->set_type(cmdRequest->AP102CTRL);
+    cmdRequest->mutable_ap102control()->set_speed(throttle);
+    cmdRequest->mutable_ap102control()->set_direction(angle);
+    QByteArray serializedPayload = QByteArray::fromStdString(container->SerializeAsString());
+    LOG_DEBUG("Sending rcControl command: " << serializedPayload);
+    emit sendCmdRequest(serializedPayload);
+}
