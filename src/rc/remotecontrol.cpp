@@ -45,7 +45,7 @@ void RemoteControl::readyRead() {
     QByteArray buffer;
     if (m_socket->bytesAvailable()) {
         buffer = m_socket->readAll();
-        LOG_DEBUG("Got Data: \n\t" << buffer);
+        //LOG_DEBUG("Got Data: \n\t" << buffer);
         emit mavlinkMessage(buffer);
     }
 }
