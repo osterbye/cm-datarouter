@@ -49,5 +49,6 @@ void MAVLinkParser::communicationReceive(QByteArray ba)
     if (status.packet_rx_drop_count > 0) {
         m_droppedPackages += status.packet_rx_drop_count;
         emit packageLoss(m_droppedPackages);
+        LOG_DEBUG("Dropped packages: " << m_droppedPackages);
     }
 }
