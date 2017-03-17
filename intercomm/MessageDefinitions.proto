@@ -75,11 +75,12 @@ enum COMMAND_ORIGIN {
 
 message CommandRequest {
     enum TYPE {
-        SETDOORLOCK = 1;
-        COMFORT     = 2;
-        LIGHTS      = 3;
-        DRIVETRAIN  = 4;
-        AP102CTRL   = 5;
+        SETDOORLOCK         = 1;
+        COMFORT             = 2;
+        LIGHTS              = 3;
+        DRIVETRAIN          = 4;
+        AP102CTRL           = 5;
+        SETMOTORCALIBRATION = 6;
     }
 
     message SetDoorLock {
@@ -91,13 +92,21 @@ message CommandRequest {
         optional float direction = 2;
     }
 
+    message SetMotorCalibration {
+        optional float steerGain      = 1; // multiplication constant 
+        optional float steerOffset    = 3;
+        optional float speedGain      = 2;
+        optional float speedOffset    = 4;
+    }
+
     optional int32 timestamp               = 1; // at time request is generated
     optional COMMAND_ORIGIN commandOrigin  = 2;
     optional int32 counter                 = 3; // incremented for each command from same origin
     optional TYPE type                     = 4;
     oneof argument {                            // optional command arguments
-        SetDoorLock setDoorLock            = 5;
-        Ap102Control ap102Control          = 6;
+        SetDoorLock setDoorLock                 = 5;
+        Ap102Control ap102Control               = 6;
+        SetMotorCalibration setMotorCalibration = 7;
     }
 }
 
