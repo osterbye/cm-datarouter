@@ -6,8 +6,10 @@ RemoteControl::RemoteControl(QString host, quint16 port, QObject *parent) :
     QObject(parent), m_host(host), m_port(port)
 {
     m_parser = new MAVLinkParser(this);
-    connect(m_parser, SIGNAL(heartbeat()), this, SIGNAL(heartbeat()));
+    connect(m_parser, SIGNAL(heartbeat()), this, SLOT(heartbeat()));
     connect(m_parser, SIGNAL(control(float,float)), this, SIGNAL(control(float,float)));
+    connect(m_parser, SIGNAL(control(float,float)), this, SLOT(controlCmd(float,float)));
+
     connect(m_parser, SIGNAL(packageLoss(quint16)), this, SIGNAL(packageLoss(quint16)));
     connect(this, SIGNAL(mavlinkMessage(QByteArray)), m_parser, SLOT(communicationReceive(QByteArray)));
 
@@ -16,6 +18,10 @@ RemoteControl::RemoteControl(QString host, quint16 port, QObject *parent) :
     connect(m_socket, SIGNAL(connected()), this, SLOT(connected()));
     connect(m_socket, SIGNAL(disconnected()),this, SLOT(disconnected()));
     connect(m_socket, SIGNAL(readyRead()),this, SLOT(readyRead()));
+
+    m_lastThrottle = 0.0;
+    m_lastAngle = 0.0;
+    m_heartbeatTimer.start();
 
     initConnection();
 }
@@ -48,4 +54,18 @@ void RemoteControl::readyRead() {
         //LOG_DEBUG("Got Data: \n\t" << buffer);
         emit mavlinkMessage(buffer);
     }
+}
+
+void RemoteControl::heartbeat()
+{
+    if (m_heartbeatTimer.restart() < 3000) {
+        emit control(m_lastThrottle, m_lastAngle);
+    }
+}
+
+void RemoteControl::controlCmd(float throttle, float angle)
+{
+    m_lastThrottle = throttle;
+    m_lastAngle = angle;
+    m_heartbeatTimer.start();
 }

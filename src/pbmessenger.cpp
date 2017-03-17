@@ -89,11 +89,6 @@ void PBMessenger::cmdRequestDoorLock(bool lock)
     emit sendCmdRequest(serializedPayload);
 }
 
-void PBMessenger::rcHeartbeat()
-{
-    // TODO: should we repeat last control cmd for the heartbeat?
-}
-
 void PBMessenger::rcControl(float throttle, float angle)
 {
     ContainerMessage * container = new ContainerMessage();
