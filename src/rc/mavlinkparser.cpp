@@ -33,6 +33,7 @@ void MAVLinkParser::communicationReceive(QByteArray ba)
                 mavlink_msg_rc_channels_override_decode(&msg, &channelsOverride);
                 turnAngle = (channelsOverride.chan1_raw >= 1100 && channelsOverride.chan1_raw <= 1900) ? float(1500-channelsOverride.chan1_raw)/400.0 : 0;
                 throttle = (channelsOverride.chan3_raw >= 1100 && channelsOverride.chan3_raw <= 1900) ? float(1500-channelsOverride.chan3_raw)/400.0 : 0;
+                emit control(throttle, turnAngle);
                 LOG_DEBUG("Got an RC control command. Turn value: " << channelsOverride.chan1_raw << " (" << turnAngle << ")" << ". Throttle value: " << channelsOverride.chan3_raw << " (" << throttle << ")");
                 break;
             case MAVLINK_MSG_ID_COMMAND_LONG:
