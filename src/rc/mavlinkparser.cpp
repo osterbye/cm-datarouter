@@ -39,6 +39,7 @@ void MAVLinkParser::communicationReceive(QByteArray ba)
             case MAVLINK_MSG_ID_COMMAND_LONG:
                 mavlink_command_long_t commandlong;
                 mavlink_msg_command_long_decode(&msg, &commandlong);
+                emit startCameraStream();
                 LOG_DEBUG("Got a command long message");
                 break;
             default:

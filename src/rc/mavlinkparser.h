@@ -15,6 +15,7 @@ signals:
     void heartbeat();
     void control(float throttle, float angle);
     void packageLoss(quint16 count);
+    void startCameraStream();
 
 public slots:
     void communicationReceive(QByteArray ba);

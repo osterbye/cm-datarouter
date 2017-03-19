@@ -9,6 +9,7 @@
 
 class Pubnub_spiri;
 class RemoteControl;
+class CameraHandler;
 
 class Datarouter : public QObject
 {
@@ -29,6 +30,7 @@ private:
 
     Pubnub_spiri *m_pubnubHandler;
     RemoteControl *m_rc;
+    CameraHandler *m_camera;
 };
 
 #endif // DATAROUTER_H

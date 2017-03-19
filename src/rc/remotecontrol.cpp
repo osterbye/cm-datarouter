@@ -13,6 +13,8 @@ RemoteControl::RemoteControl(QString host, quint16 port, QObject *parent) :
     connect(m_parser, SIGNAL(packageLoss(quint16)), this, SIGNAL(packageLoss(quint16)));
     connect(this, SIGNAL(mavlinkMessage(QByteArray)), m_parser, SLOT(communicationReceive(QByteArray)));
 
+    connect(m_parser, SIGNAL(startCameraStream()), this, SIGNAL(startCameraStream()));
+
     m_socket = new QTcpSocket(this);
     connect(m_socket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(error(QAbstractSocket::SocketError)));
     connect(m_socket, SIGNAL(connected()), this, SLOT(connected()));

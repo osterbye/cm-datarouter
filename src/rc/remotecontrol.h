@@ -16,6 +16,7 @@ public:
 signals:
     void control(float throttle, float angle);
     void packageLoss(quint16 count);
+    void startCameraStream();
     void mavlinkMessage(QByteArray ba);
 
 private:

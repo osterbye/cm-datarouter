@@ -2,6 +2,7 @@
 include(protobuf.pri)
 include(src/pubnub/pubnub.pri)
 include(src/rc/rc.pri)
+include(src/camerahandler/camerahandler.pri)
 
 QT += core sql
 QT -= gui
